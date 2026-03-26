@@ -1666,7 +1666,7 @@ void updateWorkRuntime(AppState &state) {
       startWorkPumpChunk(state, step.target_index, now);
     } else if (step.type == WorkStepType::Valve && step.target_index < kValveCount) {
       ValveState &valve = state.valves[step.target_index];
-      const uint8_t target_position = step.aux_value;
+      const uint8_t target_position = min(step.aux_value, kValvePositionCount);
       if (target_position == 0) {
         serial_link::zeroValve(step.target_index, valve.zero_offset_steps, valve.speed_steps, valve.invert_direction);
         startValveMotion(valve, ValveMotion::Zeroing, valveZeroDurationMs(valve));
@@ -1712,7 +1712,7 @@ void updateWorkRuntime(AppState &state) {
     }
   } else if (step.type == WorkStepType::Valve && step.target_index < kValveCount) {
     ValveState &valve = state.valves[step.target_index];
-    const uint8_t target_position = step.aux_value;
+    const uint8_t target_position = min(step.aux_value, kValvePositionCount);
     if (!valve.moving) {
       if ((target_position == 0 && valve.position_index == 0) ||
           (target_position > 0 && valve.position_index == (target_position - 1))) {

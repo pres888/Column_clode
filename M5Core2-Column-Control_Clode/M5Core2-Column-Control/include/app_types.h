@@ -21,6 +21,7 @@ constexpr uint8_t kValveCount = 2;
 constexpr uint8_t kTimerCount = 6;
 constexpr uint8_t kProgramCount = 50;
 constexpr uint8_t kProgramStepCount = 25;
+constexpr uint8_t kValvePositionCount = 5;  // positions 0-4 (displayed as 1-5)
 constexpr float kValveStepCalibration = 0.6f;
 
 enum class ValveMotion : uint8_t {

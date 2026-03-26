@@ -38,12 +38,12 @@ void logLine(const String &line) {
 }
 
 char pumpAxis(uint8_t pump_index) {
-  if (pump_index >= sizeof(kPumpAxes)) return '?';
+  if (pump_index >= sizeof(kPumpAxes) / sizeof(kPumpAxes[0])) return '?';
   return kPumpAxes[pump_index];
 }
 
 char valveAxis(uint8_t valve_index) {
-  if (valve_index >= sizeof(kValveAxes)) return '?';
+  if (valve_index >= sizeof(kValveAxes) / sizeof(kValveAxes[0])) return '?';
   return kValveAxes[valve_index];
 }
 

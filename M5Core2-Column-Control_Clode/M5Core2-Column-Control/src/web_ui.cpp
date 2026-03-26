@@ -272,10 +272,16 @@ uint32_t programRemainingMs(const AppState &state) {
                1000UL;
     } else if (step.type == WorkStepType::Valve && step.target_index < kValveCount) {
       const ValveState &valve = state.valves[step.target_index];
+      const float position_units = 6.4f * valve.ratio * kValveStepCalibration;
+      const float speed = max(valve.speed_steps, 10.0f);
       if (step.aux_value == 0) {
-        total += static_cast<uint32_t>((5000.0f + valve.zero_offset_steps) / max(valve.speed_steps, 10.0f) * 60000.0f);
+        // Distance to travel back to zero: current position steps + offset
+        const float dist = (valve.position_index * position_units) +
+                           (static_cast<float>(valve.zero_offset_steps) / 100.0f);
+        total += static_cast<uint32_t>(max(dist, position_units) / speed * 60000.0f);
       } else {
-        total += static_cast<uint32_t>((valve.ratio * 0.6f * 640.0f) / max(valve.speed_steps, 10.0f) * 60000.0f);
+        // One position step worth of travel
+        total += static_cast<uint32_t>(position_units / speed * 60000.0f);
       }
     }
   }
