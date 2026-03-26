@@ -1591,6 +1591,19 @@ void updatePumpAnimation(AppState &state) {
 }
 
 void updateValveAnimation(AppState &state) {
+  // Timeout: force-stop any valve moving longer than 2x its expected duration.
+  // Handles the case where homing (G28) never receives an endstop signal.
+  const uint32_t now = millis();
+  for (uint8_t i = 0; i < kValveCount; ++i) {
+    ValveState &valve = state.valves[i];
+    if (valve.moving && valve.motion_duration_ms > 0 &&
+        (now - valve.motion_started_ms) > valve.motion_duration_ms * 2UL) {
+      serial_link::stopValveMotion(i);
+      stopValve(valve);
+      state.needs_redraw = true;
+    }
+  }
+
   uint8_t valve_index = 0;
   serial_link::ValveAction action = serial_link::ValveAction::None;
   if (!serial_link::takeValveCompletion(valve_index, action)) return;

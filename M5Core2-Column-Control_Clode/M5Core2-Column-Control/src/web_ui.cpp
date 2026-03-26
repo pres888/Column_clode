@@ -2302,7 +2302,7 @@ void handleValveSave() {
   const uint16_t zero = server.hasArg("zero") ? static_cast<uint16_t>(server.arg("zero").toInt())
                                               : g_state->valves[valve_index].zero_offset_steps;
   const float ratio = server.hasArg("ratio") ? server.arg("ratio").toFloat() : g_state->valves[valve_index].ratio;
-  const bool rev = server.hasArg("rev");
+  const bool rev = server.hasArg("rev") && server.arg("rev").length() > 0;
 
   g_state->operator_manual_mode = true;
   ui::updateValveConfig(*g_state, valve_index, speed, zero, ratio, rev);
